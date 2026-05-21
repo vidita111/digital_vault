@@ -51,13 +51,18 @@
             background-size: 100% 24px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 0 0 25px rgba(0,0,0,0.4);
             border: 1px solid #2e2a24;
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
-                        opacity 0.6s ease, 
-                        filter 0.6s ease,
-                        background-color 0.6s ease;
+    
+        /* Optimized smooth hardware transitions */
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+                        opacity 0.4s ease, 
+                        filter 0.4s ease;
+    
             transform-style: preserve-3d;
             backface-visibility: hidden;
-        }
+    
+    /* Tells mobile browsers to use the GPU for silky smooth sliding */
+            will-change: transform, opacity;
+         }
 
         /* Sticky Tape Layer */
         .sticky-tape {
@@ -308,7 +313,7 @@
                             <div class="relative w-[300px] h-[410px] flex items-center justify-center">
                                 {filteredItems.map((item, index) => {
                                     const cardClass = get3DStateClass(index);
-                                    
+                                    if (cardClass === "card-vanished") return null;
                                     return (
                                         <article 
                                             key={item.id} 
@@ -329,14 +334,16 @@
                                                     </span>
                                                 </div>
 
+                                                {/* Optimized Frame Container */}
                                                 <div class="w-full h-44 bg-[#0d0c0b] rounded mb-2.5 overflow-hidden border border-stone-900 relative shadow-inner">
-                                                    <img 
-                                                        src={item.image} 
-                                                        alt={`${item.title} poster`}
-                                                        class="w-full h-full object-contain object-center select-none pointer-events-none"
-                                                        loading="lazy"
-                                                    />
-                                                </div>
+                                                   <img 
+                                                      src={item.image} 
+                                                      alt={`${item.title} poster`}
+        /* Added containment layout rules to stop the phone from recalculating page sizes */
+                                                      class="w-full h-full object-contain object-center select-none pointer-events-none contain-intrinsic-size"
+                                                      loading="lazy" 
+                                                   />
+                                                 </div>
 
                                                 <h2 class="journal-header text-base font-bold text-[#f4efe6] tracking-tight truncate">
                                                     {item.title}
